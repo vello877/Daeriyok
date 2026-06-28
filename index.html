@@ -384,13 +384,25 @@ ${ctxParts.join('\n')}
   const comfortPrompt=comfortPromptText+'\n\n상황: '+ctxParts.join(', ');
 
   try {
-    const response = await fetch('/api/generate', {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ ragePrompt, comfortPrompt })
-    });
-    if (!response.ok) throw new Error('서버 오류');
-    const { rageText, comfortText } = await response.json();
+    const callGemini = async (prompt) => {
+      const r = await fetch(
+        'https://generativelanguage.googleapis.com/v1/models/gemini-1.5-flash:generateContent?key=AQ.Ab8RN6LfyVvczSI_F1fxarIXan5Vwq6jjTWjlEpiARPly_tk6A',
+        {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({
+            contents: [{ parts: [{ text: prompt }] }],
+            generationConfig: { temperature: 0.9, maxOutputTokens: 1000 }
+          })
+        }
+      );
+      const d = await r.json();
+      return d.candidates?.[0]?.content?.parts?.[0]?.text || '';
+    };
+    const [rageText, comfortText] = await Promise.all([
+      callGemini(ragePrompt),
+      callGemini(comfortPrompt)
+    ]);
     lastRageText=rageText; lastComfortText=comfortText;
     lastTags=[...selectedChips]; lastIntensity=selectedLevel;
 
