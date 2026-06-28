@@ -1,40 +1,43 @@
+// Vercel 서버리스 함수 - API 키를 서버에서만 사용 (브라우저 노출 방지)
 export default async function handler(req, res) {
-  // CORS 헤더
-  res.setHeader('Access-Control-Allow-Origin', '*');
-  res.setHeader('Access-Control-Allow-Methods', 'POST, OPTIONS');
-  res.setHeader('Access-Control-Allow-Headers', 'Content-Type');
-  if (req.method === 'OPTIONS') return res.status(200).end();
-  if (req.method !== 'POST') return res.status(405).json({ error: 'Method not allowed' });
-
-  const { ragePrompt, comfortPrompt } = req.body;
-  const GEMINI_KEY = process.env.Gemini_API_Key;
-
-  if (!GEMINI_KEY) return res.status(500).json({ error: 'API key not configured' });
-
-  const callGemini = async (prompt) => {
-    const r = await fetch(
-      `https://generativelanguage.googleapis.com/v1/models/gemini-1.5-flash:generateContent?key=${GEMINI_KEY}`,
-      {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({
-          contents: [{ parts: [{ text: prompt }] }],
-          generationConfig: { temperature: 0.9, maxOutputTokens: 1000 }
-        })
-      }
-    );
-    const d = await r.json();
-    console.log('Gemini response:', JSON.stringify(d).slice(0, 200));
-    return d.candidates?.[0]?.content?.parts?.[0]?.text || '';
-  };
-
-  try {
-    const [rageText, comfortText] = await Promise.all([
-      callGemini(ragePrompt),
-      callGemini(comfortPrompt)
-    ]);
-    res.status(200).json({ rageText, comfortText });
-  } catch (e) {
-    res.status(500).json({ error: e.message });
+  if (req.method !== 'POST') {
+    return res.status(405).json({ error: 'Method not allowed' });
   }
+
+  const { prompt } = req.body || {};
+  if (!prompt || typeof prompt !== 'string' || prompt.length > 2000) {
+    return res.status(400).json({ error: 'Invalid prompt' });
+  }
+
+  const KEY = process.env.OPENROUTER_API_KEY;
+  if (!KEY) return res.status(500).json({ error: 'Server not configured' });
+
+  // 여러 무료 모델 순차 시도 (하나 죽어도 다음으로)
+  const models = [
+    'nousresearch/hermes-3-llama-3.1-405b:free',
+    'meta-llama/llama-3.3-70b-instruct:free'
+  ];
+
+  for (const model of models) {
+    try {
+      const r = await fetch('https://openrouter.ai/api/v1/chat/completions', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+          'Authorization': 'Bearer ' + KEY
+        },
+        body: JSON.stringify({
+          model,
+          messages: [{ role: 'user', content: prompt }],
+          max_tokens: 1500
+        })
+      });
+      if (!r.ok) continue;
+      const d = await r.json();
+      const text = d.choices?.[0]?.message?.content || '';
+      if (text) return res.status(200).json({ text });
+    } catch (e) { continue; }
+  }
+
+  return res.status(502).json({ error: 'All models failed' });
 }
