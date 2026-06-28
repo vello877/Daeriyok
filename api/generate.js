@@ -13,7 +13,7 @@ export default async function handler(req, res) {
 
   const callGemini = async (prompt) => {
     const r = await fetch(
-      `https://generativelanguage.googleapis.com/v1beta/models/gemini-2.0-flash:generateContent?key=${GEMINI_KEY}`,
+      `https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-flash:generateContent?key=${GEMINI_KEY}`,
       {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
@@ -24,6 +24,7 @@ export default async function handler(req, res) {
       }
     );
     const d = await r.json();
+    console.log('Gemini response:', JSON.stringify(d).slice(0, 200));
     return d.candidates?.[0]?.content?.parts?.[0]?.text || '';
   };
 
