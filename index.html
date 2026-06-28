@@ -349,13 +349,23 @@ function getLevelPrompt(level) {
 
 const comfortPromptText = `당신은 지친 직장인을 따뜻하게 위로해주는 존재입니다. 아래 상황에 처한 사람에게 짧고 따뜻한 위로 한 마디를 건네주세요. 2~3문장, 진심 어린 말투로, 공감 먼저 그 다음 응원, "당신 잘못 아니에요"처럼 명확하게. 위로 문장만 출력하세요.`;
 
-async function callClaude(prompt, maxTokens=1000) {
-  const r = await fetch("https://api.anthropic.com/v1/messages",{
-    method:"POST", headers:{"Content-Type":"application/json"},
-    body:JSON.stringify({model:"claude-sonnet-4-6",max_tokens:maxTokens,messages:[{role:"user",content:prompt}]})
+const OPENROUTER_KEY = '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';
+
+async function callAI(prompt) {
+  const r = await fetch('https://openrouter.ai/api/v1/chat/completions', {
+    method: 'POST',
+    headers: {
+      'Content-Type': 'application/json',
+      'Authorization': 'Bearer ' + OPENROUTER_KEY
+    },
+    body: JSON.stringify({
+      model: 'mistralai/mistral-7b-instruct:free',
+      messages: [{ role: 'user', content: prompt }],
+      max_tokens: 1000
+    })
   });
   const d = await r.json();
-  return d.content?.map(i=>i.text||'').join('')||'';
+  return d.choices?.[0]?.message?.content || '';
 }
 
 async function generateRage() {
@@ -388,7 +398,10 @@ ${ctxParts.join('\n')}
   const comfortPrompt=comfortPromptText+'\n\n상황: '+ctxParts.join(', ');
 
   try {
-    const [rageText, comfortText] = await Promise.all([callClaude(ragePrompt), callClaude(comfortPrompt, 300)]);
+    const [rageText, comfortText] = await Promise.all([
+      callAI(ragePrompt),
+      callAI(comfortPrompt)
+    ]);
     lastRageText=rageText; lastComfortText=comfortText;
     lastTags=[...selectedChips]; lastIntensity=selectedLevel;
 
