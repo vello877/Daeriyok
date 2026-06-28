@@ -519,7 +519,7 @@ async function loadPosts(reset=false) {
   else if(currentSort==='spicy') url+='&intensity=eq.spicy&order=created_at.desc';
 
   try {
-    const r=await api(url,{headers:{'Range-Unit':'items','Range':`${currentPage*PAGE_SIZE}-${(currentPage+1)*PAGE_SIZE-1}`}});
+    const r=await api(url);
     const posts=await r.json();
     if(!Array.isArray(posts)) throw new Error();
 
