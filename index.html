@@ -355,34 +355,19 @@ function getLevelPrompt(level) {
 
 const comfortPromptText = `당신은 지친 직장인을 따뜻하게 위로해주는 존재입니다. 아래 상황에 처한 사람에게 짧고 따뜻한 위로 한 마디를 건네주세요. 2~3문장, 진심 어린 말투로, 공감 먼저 그 다음 응원, "당신 잘못 아니에요"처럼 명확하게. 위로 문장만 출력하세요.`;
 
-const OPENROUTER_KEY = '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';
 
 async function callAI(prompt) {
-  const models = [
-    'nousresearch/hermes-3-llama-3.1-405b:free',
-    'openai/gpt-4o-mini'
-  ];
-  for (const model of models) {
-    try {
-      const r = await fetch('https://openrouter.ai/api/v1/chat/completions', {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-          'Authorization': 'Bearer ' + OPENROUTER_KEY
-        },
-        body: JSON.stringify({
-          model: model,
-          messages: [{ role: 'user', content: prompt }],
-          max_tokens: 1000
-        })
-      });
-      if (!r.ok) continue;
-      const d = await r.json();
-      const text = d.choices?.[0]?.message?.content || '';
-      if (text) return text;
-    } catch (e) { continue; }
-  }
-  return '';
+  // API 키는 서버(/api/generate)에서만 사용 - 브라우저에 노출 안 됨
+  try {
+    const r = await fetch('/api/generate', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ prompt })
+    });
+    if (!r.ok) return '';
+    const d = await r.json();
+    return d.text || '';
+  } catch (e) { return ''; }
 }
 
 async function generateRage() {
@@ -480,6 +465,8 @@ function showCopied(btn, defaultLabel) {
 // ===== 게시판에 올리기 =====
 async function postToCommunity() {
   if(!lastRageText){ showToast('먼저 욕을 생성해주세요!'); return; }
+  const cd=checkCooldown('post', 30);
+  if(cd>0){ showToast(cd+'초 후에 다시 올려주세요'); return; }
   const btn=document.getElementById('postBtn');
   btn.disabled=true; btn.textContent='올리는 중...';
   try {
@@ -519,7 +506,7 @@ async function loadPosts(reset=false) {
   if(reset){ currentPage=0; allLoaded=false; }
   if(allLoaded) return;
 
-  let url='posts?select=*&limit='+PAGE_SIZE+'&offset='+(currentPage*PAGE_SIZE);
+  let url='posts?select=*&report_count=lt.3&limit='+PAGE_SIZE+'&offset='+(currentPage*PAGE_SIZE);
   if(currentSort==='latest') url+='&order=created_at.desc';
   else if(currentSort==='likes') url+='&order=likes.desc';
   else if(currentSort==='spicy') url+='&intensity=eq.spicy&order=created_at.desc';
@@ -671,7 +658,10 @@ async function loadComments(postId) {
 async function submitComment(postId) {
   const input=document.getElementById('comment-input-'+postId);
   const content=input.value.trim();
-  if(!content){ showToast('댓글을 입력해주세요'); return; }
+  const chk=checkContent(content);
+  if(!chk.ok){ showToast(chk.msg); return; }
+  const cd=checkCooldown('comment', 15);
+  if(cd>0){ showToast(cd+'초 후에 다시 작성해주세요'); return; }
   try {
     const r=await api('comments',{method:'POST',body:JSON.stringify({post_id:postId,content})});
     if(r.ok){
@@ -705,11 +695,18 @@ async function deleteComment(commentId, postId) {
   } catch { showToast('삭제 실패. 다시 시도해주세요'); }
 }
 
+const reportedPosts = new Set(JSON.parse(localStorage.getItem('reportedPosts')||'[]'));
 async function reportPost(postId) {
+  if(reportedPosts.has(postId)){ showToast('이미 신고한 게시물이에요'); return; }
   if(!confirm('이 게시물을 신고하시겠어요?')) return;
   try {
     await api('reports',{method:'POST',body:JSON.stringify({post_id:postId,reason:'user_report'})});
+    reportedPosts.add(postId);
+    localStorage.setItem('reportedPosts', JSON.stringify([...reportedPosts]));
     showToast('신고가 접수됐어요');
+    // 신고한 게시물은 본인 화면에서 즉시 숨김
+    const card=document.getElementById('post-'+postId);
+    if(card) card.style.display='none';
   } catch { showToast('신고 실패. 다시 시도해주세요'); }
 }
 
@@ -732,6 +729,36 @@ function timeAgo(iso) {
 
 function escHtml(s) {
   return (s||'').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;');
+}
+
+// ===== 게시판 보호 장치 =====
+// 개인정보/광고/링크 패턴 검사
+function checkContent(text) {
+  if (!text || !text.trim()) return { ok:false, msg:'내용을 입력해주세요' };
+  const t = text.trim();
+  if (t.length > 300) return { ok:false, msg:'너무 길어요 (300자 이내)' };
+  // 전화번호
+  if (/01[0-9]['"]?[-\s]?\d{3,4}[-\s]?\d{4}/.test(t)) return { ok:false, msg:'전화번호는 입력할 수 없어요' };
+  // 주민번호 패턴
+  if (/\d{6}[-\s]?[1-4]\d{6}/.test(t)) return { ok:false, msg:'개인정보는 입력할 수 없어요' };
+  // URL / 링크
+  if (/(https?:\/\/|www\.|\.com|\.net|\.co\.kr|\.kr\b|t\.me\/|bit\.ly)/i.test(t)) return { ok:false, msg:'링크는 올릴 수 없어요' };
+  // 카톡/텔레 ID 유도
+  if (/(카톡|카카오톡|텔레|텔레그램|오픈채팅|영업|광고|홍보|디비|작업대출|토토|벳)/i.test(t)) return { ok:false, msg:'광고성 내용은 올릴 수 없어요' };
+  // 같은 문자 과도 반복 (도배)
+  if (/(.)\1{15,}/.test(t)) return { ok:false, msg:'도배성 내용은 올릴 수 없어요' };
+  return { ok:true };
+}
+
+// 작성 쿨다운 (도배 방지)
+function checkCooldown(key, seconds) {
+  const last = parseInt(localStorage.getItem('cd_'+key) || '0');
+  const now = Date.now();
+  if (now - last < seconds*1000) {
+    return Math.ceil((seconds*1000 - (now-last))/1000);
+  }
+  localStorage.setItem('cd_'+key, String(now));
+  return 0;
 }
 
 function showToast(msg) {
