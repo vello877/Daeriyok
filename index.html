@@ -147,6 +147,10 @@ textarea:focus { border-color:var(--red); }
 .comment-item:last-child { border-bottom:none; }
 .comment-text { font-size:13px; color:#ccc; line-height:1.7; margin-bottom:4px; word-break:keep-all; }
 .comment-time { font-size:11px; color:#555; }
+.comment-meta { display:flex; align-items:center; justify-content:space-between; margin-top:2px; }
+.comment-actions { display:flex; gap:8px; }
+.comment-actions button { background:none; border:none; color:#666; font-size:11px; cursor:pointer; font-family:'Noto Sans KR',sans-serif; padding:0; }
+.comment-actions button:hover { color:var(--red); }
 .comment-input-row { display:flex; gap:8px; margin-top:12px; }
 .comment-input { flex:1; background:#1a1a1a; border:1px solid #383838; border-radius:8px; color:var(--cream); font-family:'Noto Sans KR',sans-serif; font-size:13px; padding:10px 14px; outline:none; transition:border-color 0.2s; }
 .comment-input:focus { border-color:var(--red); }
@@ -312,6 +316,8 @@ getIpHash().then(h => ipHash = h);
 // 좋아요 상태 로컬 캐시
 const likedPosts = new Set(JSON.parse(localStorage.getItem('likedPosts')||'[]'));
 function saveLikes() { localStorage.setItem('likedPosts', JSON.stringify([...likedPosts])); }
+const myComments = new Set(JSON.parse(localStorage.getItem('myComments')||'[]'));
+function saveMyComments() { localStorage.setItem('myComments', JSON.stringify([...myComments])); }
 
 // ===== 네비게이션 =====
 function showPage(page) {
@@ -612,20 +618,25 @@ function toggleExpand(id) {
 }
 
 async function toggleLike(postId, btn) {
+  if(btn.disabled) return;
+  btn.disabled=true;
   const liked=likedPosts.has(postId);
   const countEl=document.getElementById('likes-'+postId);
-  const current=parseInt(countEl.textContent)||0;
-  if(liked){
-    likedPosts.delete(postId); saveLikes();
-    btn.classList.remove('liked');
-    countEl.textContent=current-1;
-    await api('likes?post_id=eq.'+postId+'&ip_hash=eq.'+ipHash,{method:'DELETE',prefer:''});
-  } else {
-    likedPosts.add(postId); saveLikes();
-    btn.classList.add('liked');
-    countEl.textContent=current+1;
-    await api('likes',{method:'POST',body:JSON.stringify({post_id:postId,ip_hash:ipHash})});
-  }
+  try {
+    if(liked){
+      await api('likes?post_id=eq.'+postId+'&ip_hash=eq.'+ipHash,{method:'DELETE',prefer:''});
+      likedPosts.delete(postId); saveLikes();
+      btn.classList.remove('liked');
+    } else {
+      const r=await api('likes',{method:'POST',body:JSON.stringify({post_id:postId,ip_hash:ipHash})});
+      if(r.ok){ likedPosts.add(postId); saveLikes(); btn.classList.add('liked'); }
+    }
+    // DB의 실제 likes 값을 다시 읽어와서 정확히 표시
+    const pr=await api('posts?id=eq.'+postId+'&select=likes');
+    const pd=await pr.json();
+    if(Array.isArray(pd)&&pd[0]){ countEl.textContent=pd[0].likes; }
+  } catch { showToast('잠시 후 다시 시도해주세요'); }
+  btn.disabled=false;
 }
 
 async function toggleComments(postId) {
@@ -642,11 +653,18 @@ async function loadComments(postId) {
     if(!Array.isArray(comments)||comments.length===0){
       list.innerHTML='<div style="font-size:12px;color:#555;padding:8px 0">첫 댓글을 달아보세요!</div>'; return;
     }
-    list.innerHTML=comments.map(c=>`
-      <div class="comment-item">
-        <div class="comment-text">${escHtml(c.content)}</div>
-        <div class="comment-time">${timeAgo(c.created_at)}</div>
-      </div>`).join('');
+    list.innerHTML=comments.map(c=>{
+      const mine=myComments.has(c.id);
+      const actions=mine?`<span class="comment-actions">
+        <button onclick="editComment('${c.id}','${postId}')">수정</button>
+        <button onclick="deleteComment('${c.id}','${postId}')">삭제</button>
+      </span>`:'';
+      return `
+      <div class="comment-item" id="comment-${c.id}">
+        <div class="comment-text" id="ctext-${c.id}">${escHtml(c.content)}</div>
+        <div class="comment-meta"><span class="comment-time">${timeAgo(c.created_at)}</span>${actions}</div>
+      </div>`;
+    }).join('');
   } catch { list.innerHTML='<div style="font-size:12px;color:#555">댓글을 불러올 수 없어요</div>'; }
 }
 
@@ -656,9 +674,35 @@ async function submitComment(postId) {
   if(!content){ showToast('댓글을 입력해주세요'); return; }
   try {
     const r=await api('comments',{method:'POST',body:JSON.stringify({post_id:postId,content})});
-    if(r.ok){ input.value=''; await loadComments(postId); showToast('댓글이 등록됐어요'); }
-    else throw new Error();
+    if(r.ok){
+      const data=await r.json();
+      if(Array.isArray(data)&&data[0]?.id){ myComments.add(data[0].id); saveMyComments(); }
+      input.value=''; await loadComments(postId); showToast('댓글이 등록됐어요');
+    } else throw new Error();
   } catch { showToast('등록 실패. 다시 시도해주세요'); }
+}
+
+async function editComment(commentId, postId) {
+  const textEl=document.getElementById('ctext-'+commentId);
+  const current=textEl.textContent;
+  const updated=prompt('댓글 수정', current);
+  if(updated===null) return;
+  const trimmed=updated.trim();
+  if(!trimmed){ showToast('내용을 입력해주세요'); return; }
+  try {
+    const r=await api('comments?id=eq.'+commentId,{method:'PATCH',body:JSON.stringify({content:trimmed})});
+    if(r.ok){ await loadComments(postId); showToast('댓글이 수정됐어요'); }
+    else throw new Error();
+  } catch { showToast('수정 실패. 다시 시도해주세요'); }
+}
+
+async function deleteComment(commentId, postId) {
+  if(!confirm('이 댓글을 삭제할까요?')) return;
+  try {
+    const r=await api('comments?id=eq.'+commentId,{method:'DELETE',prefer:''});
+    if(r.ok){ myComments.delete(commentId); saveMyComments(); await loadComments(postId); showToast('댓글이 삭제됐어요'); }
+    else throw new Error();
+  } catch { showToast('삭제 실패. 다시 시도해주세요'); }
 }
 
 async function reportPost(postId) {
