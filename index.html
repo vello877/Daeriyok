@@ -384,7 +384,7 @@ ${ctxParts.join('\n')}
   const comfortPrompt=comfortPromptText+'\n\n상황: '+ctxParts.join(', ');
 
   try {
-    const callGemini = async (prompt) => {
+    const callAI = async (prompt) => {
       const r = await fetch('https://openrouter.ai/api/v1/chat/completions', {
         method: 'POST',
         headers: {
@@ -400,11 +400,9 @@ ${ctxParts.join('\n')}
       const d = await r.json();
       return d.choices?.[0]?.message?.content || '';
     };
-      return d.candidates?.[0]?.content?.parts?.[0]?.text || '';
-    };
     const [rageText, comfortText] = await Promise.all([
-      callGemini(ragePrompt),
-      callGemini(comfortPrompt)
+      callAI(ragePrompt),
+      callAI(comfortPrompt)
     ]);
     lastRageText=rageText; lastComfortText=comfortText;
     lastTags=[...selectedChips]; lastIntensity=selectedLevel;
