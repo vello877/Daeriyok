@@ -1,4 +1,5 @@
 export default async function handler(req, res) {
+  // CORS 헤더
   res.setHeader('Access-Control-Allow-Origin', '*');
   res.setHeader('Access-Control-Allow-Methods', 'POST, OPTIONS');
   res.setHeader('Access-Control-Allow-Headers', 'Content-Type');
@@ -6,7 +7,7 @@ export default async function handler(req, res) {
   if (req.method !== 'POST') return res.status(405).json({ error: 'Method not allowed' });
 
   const { ragePrompt, comfortPrompt } = req.body;
-  const GEMINI_KEY = process.env.GEMINI_API_KEY;
+  const GEMINI_KEY = process.env.Gemini_API_Key;
 
   if (!GEMINI_KEY) return res.status(500).json({ error: 'API key not configured' });
 
