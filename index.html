@@ -182,6 +182,17 @@ textarea:focus { border-color:var(--red); }
 /* 토스트 */
 .toast { position:fixed; bottom:24px; left:50%; transform:translateX(-50%) translateY(20px); background:#333; color:var(--cream); padding:12px 24px; border-radius:99px; font-size:13px; opacity:0; transition:all 0.3s; pointer-events:none; z-index:999; white-space:nowrap; }
 .toast.show { opacity:1; transform:translateX(-50%) translateY(0); }
+
+/* 랭킹 모달 */
+.modal-overlay { display:none; position:fixed; inset:0; background:rgba(0,0,0,0.7); z-index:1000; align-items:center; justify-content:center; padding:20px; }
+.modal-overlay.visible { display:flex; animation:fadeIn 0.2s ease; }
+@keyframes fadeIn { from{opacity:0} to{opacity:1} }
+.modal-box { background:var(--surface); border:1px solid var(--border); border-radius:18px; padding:28px 24px; max-width:500px; width:100%; max-height:80vh; overflow-y:auto; position:relative; }
+.modal-rank { font-family:'Black Han Sans',sans-serif; font-size:28px; color:var(--red); margin-bottom:16px; }
+.modal-text { font-size:15px; line-height:1.9; color:var(--cream); white-space:pre-wrap; word-break:keep-all; margin-bottom:20px; }
+.modal-likes { font-size:13px; color:#888; margin-bottom:20px; }
+.modal-close { width:100%; padding:12px; border-radius:10px; border:1px solid #444; background:transparent; color:#aaa; font-family:'Noto Sans KR',sans-serif; font-size:14px; cursor:pointer; }
+.modal-close:hover { border-color:var(--red); color:var(--cream); }
 </style>
 </head>
 <body>
@@ -284,6 +295,14 @@ textarea:focus { border-color:var(--red); }
   </div>
 </div>
 
+<div class="modal-overlay" id="rankModal" onclick="closeRankModal(event)">
+  <div class="modal-box">
+    <div class="modal-rank" id="modalRank"></div>
+    <div class="modal-text" id="modalText"></div>
+    <div class="modal-likes" id="modalLikes"></div>
+    <button class="modal-close" onclick="document.getElementById('rankModal').classList.remove('visible')">닫기</button>
+  </div>
+</div>
 <div class="toast" id="toast"></div>
 
 <script>
@@ -301,21 +320,29 @@ const api = (path, opts={}) => fetch(`${SUPABASE_URL}/rest/v1/${path}`, {
   ...opts
 });
 
-// IP 해시 (익명화)
-async function getIpHash() {
-  try {
-    const r = await fetch('https://api.ipify.org?format=json');
-    const d = await r.json();
-    const buf = await crypto.subtle.digest('SHA-256', new TextEncoder().encode(d.ip));
-    return Array.from(new Uint8Array(buf)).map(b=>b.toString(16).padStart(2,'0')).join('').slice(0,16);
-  } catch { return 'anon_' + Math.random().toString(36).slice(2,10); }
+// 기기별 고유 ID (기기마다 달라서 같은 와이파이여도 각자 공감 가능)
+function getDeviceId() {
+  let id = localStorage.getItem('deviceId');
+  if (!id) {
+    id = 'dev_' + Math.random().toString(36).slice(2,10) + Date.now().toString(36);
+    localStorage.setItem('deviceId', id);
+  }
+  return id;
 }
-
-let ipHash = '';
-getIpHash().then(h => ipHash = h);
+let ipHash = getDeviceId();
 
 // 좋아요 상태 로컬 캐시
-const likedPosts = new Set(JSON.parse(localStorage.getItem('likedPosts')||'[]'));
+// 공감 하루 리셋
+function initLikes() {
+  const today = new Date().toDateString();
+  const savedDate = localStorage.getItem('likedDate');
+  if (savedDate !== today) {
+    localStorage.removeItem('likedPosts');
+    localStorage.setItem('likedDate', today);
+  }
+  return new Set(JSON.parse(localStorage.getItem('likedPosts')||'[]'));
+}
+const likedPosts = initLikes();
 function saveLikes() { localStorage.setItem('likedPosts', JSON.stringify([...likedPosts])); }
 const myComments = new Set(JSON.parse(localStorage.getItem('myComments')||'[]'));
 function saveMyComments() { localStorage.setItem('myComments', JSON.stringify([...myComments])); }
@@ -539,7 +566,7 @@ async function loadRanking() {
     const medals=['gold','silver','bronze'];
     const nums=['1','2','3'];
     const html=Array.isArray(posts)&&posts.length?posts.map((p,i)=>`
-      <div class="ranking-item">
+      <div class="ranking-item" onclick="openRankModal('${nums[i]}',${JSON.stringify(escHtml(p.rage_text))},${p.likes})" style="cursor:pointer;">
         <div class="rank-num ${medals[i]}">${nums[i]}</div>
         <div class="rank-text">${escHtml(p.rage_text)}</div>
         <div class="rank-likes">😤 ${p.likes}</div>
@@ -550,11 +577,14 @@ async function loadRanking() {
 
 async function loadLiveCount() {
   try {
-    const since=new Date(Date.now()-3600000).toISOString();
-    const r=await api('posts?select=id&created_at=gte.'+since);
+    // 총 게시물 수를 방문자 지표로 사용 (간단하고 의미있는 수치)
+    const r=await api('posts?select=id');
     const posts=await r.json();
     const count=Array.isArray(posts)?posts.length:0;
     document.getElementById('liveCount').textContent=count;
+    // 텍스트도 바꾸기
+    const label=document.querySelector('.live-badge span:last-child');
+    if(label) label.textContent='명이 분노를 올렸어요';
   } catch {}
 }
 
@@ -762,6 +792,19 @@ function checkCooldown(key, seconds) {
   }
   localStorage.setItem('cd_'+key, String(now));
   return 0;
+}
+
+function openRankModal(rank, text, likes) {
+  const medals = {'1':'🥇','2':'🥈','3':'🥉'};
+  document.getElementById('modalRank').textContent = medals[rank]+' '+rank+'위 레전드 욕';
+  document.getElementById('modalText').textContent = text;
+  document.getElementById('modalLikes').textContent = '😤 공감 '+likes+'개';
+  document.getElementById('rankModal').classList.add('visible');
+}
+function closeRankModal(e) {
+  if(e.target === document.getElementById('rankModal')) {
+    document.getElementById('rankModal').classList.remove('visible');
+  }
 }
 
 function showToast(msg) {
