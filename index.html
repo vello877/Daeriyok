@@ -579,14 +579,18 @@ async function loadRanking() {
 
 async function loadLiveCount() {
   try {
-    // 총 게시물 수를 방문자 지표로 사용 (간단하고 의미있는 수치)
-    const r=await api('posts?select=id');
-    const posts=await r.json();
-    const count=Array.isArray(posts)?posts.length:0;
+    // 방문 기록 (하루 1번만)
+    const today = new Date().toDateString();
+    const visited = localStorage.getItem('visited_'+today);
+    if(!visited){
+      await api('visitors',{method:'POST',body:JSON.stringify({visited_at:new Date().toISOString()})});
+      localStorage.setItem('visited_'+today, '1');
+    }
+    // 누적 방문자 수 조회
+    const r=await api('visitors?select=id');
+    const visitors=await r.json();
+    const count=Array.isArray(visitors)?visitors.length:0;
     document.getElementById('liveCount').textContent=count;
-    // 텍스트도 바꾸기
-    const label=document.querySelector('.live-badge span:last-child');
-    if(label) label.textContent='명이 분노를 올렸어요';
   } catch {}
 }
 
