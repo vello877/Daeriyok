@@ -549,8 +549,10 @@ async function loadRanking() {
 
 async function loadLiveCount() {
   try {
-    const r=await api('posts?select=count&created_at=gte.'+new Date(Date.now()-3600000).toISOString(),{headers:{'Prefer':'count=exact'}});
-    const count=r.headers.get('content-range')?.split('/')[1]||'0';
+    const since=new Date(Date.now()-3600000).toISOString();
+    const r=await api('posts?select=id&created_at=gte.'+since);
+    const posts=await r.json();
+    const count=Array.isArray(posts)?posts.length:0;
     document.getElementById('liveCount').textContent=count;
   } catch {}
 }
