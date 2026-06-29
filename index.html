@@ -565,8 +565,10 @@ async function loadRanking() {
     const posts=await r.json();
     const medals=['gold','silver','bronze'];
     const nums=['1','2','3'];
+    // 랭킹 데이터 저장 (모달용)
+    window._rankData = Array.isArray(posts) ? posts : [];
     const html=Array.isArray(posts)&&posts.length?posts.map((p,i)=>`
-      <div class="ranking-item" onclick="openRankModal('${nums[i]}',${JSON.stringify(escHtml(p.rage_text))},${p.likes})" style="cursor:pointer;">
+      <div class="ranking-item" onclick="openRankModal(${i})" style="cursor:pointer;">
         <div class="rank-num ${medals[i]}">${nums[i]}</div>
         <div class="rank-text">${escHtml(p.rage_text)}</div>
         <div class="rank-likes">😤 ${p.likes}</div>
@@ -794,11 +796,14 @@ function checkCooldown(key, seconds) {
   return 0;
 }
 
-function openRankModal(rank, text, likes) {
-  const medals = {'1':'🥇','2':'🥈','3':'🥉'};
-  document.getElementById('modalRank').textContent = medals[rank]+' '+rank+'위 레전드 욕';
-  document.getElementById('modalText').textContent = text;
-  document.getElementById('modalLikes').textContent = '😤 공감 '+likes+'개';
+function openRankModal(idx) {
+  const medals = ['🥇','🥈','🥉'];
+  const nums = ['1','2','3'];
+  const p = window._rankData && window._rankData[idx];
+  if(!p) return;
+  document.getElementById('modalRank').textContent = medals[idx]+' '+nums[idx]+'위 레전드 욕';
+  document.getElementById('modalText').textContent = p.rage_text || '';
+  document.getElementById('modalLikes').textContent = '😤 공감 '+p.likes+'개';
   document.getElementById('rankModal').classList.add('visible');
 }
 function closeRankModal(e) {
