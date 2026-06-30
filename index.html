@@ -4,7 +4,7 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>대리욕 — 못 한 말, AI가 대신 해드립니다 | 익명 분노 대나무숲</title>
-<meta name="description" content="<meta name="description" content="누구든 터질 것 같을 때 AI가 대신 욕해드립니다. 익명 대나무숲 게시판. 무료."> 누구든 터질 것 같을 때 AI가 대신 욕해드립니다. 익명 대나무숲 게시판에서 분노를 털어놓으세요. 무료, 즉시 사용 가능.">
+<meta name="description" content="누구든 터질 것 같을 때 AI가 대신 욕해드립니다. 익명 대나무숲 게시판. 무료.">
 <meta name="keywords" content="대나무숲, 익명 게시판, 분노 표출, 스트레스 해소, 욕 대신 해주기, 직장인 스트레스, 축구 욕, 감독 욕, 연예인 욕, 정치 욕, 상사 욕, 분노 해소 사이트, AI 욕 생성기, 대리욕, 익명 분풀이">
 <meta name="robots" content="index, follow">
 <meta name="google-site-verification" content="TlCLCgYlaLa3dVtXcNX98tuHGBV_CGikaFrDQZNxi5M">
@@ -98,7 +98,6 @@ textarea:focus { border-color:var(--red); }
 .share-btn.kakao:hover { background:#3A2E00; border-color:#F9E000; }
 .share-btn.twitter { border-color:#1a2a3a; color:#1d9bf0; }
 .share-btn.twitter:hover { background:#0d1825; border-color:#1d9bf0; }
-/* 게시하기 버튼 */
 .post-to-community { width:100%; margin-top:10px; padding:13px; border-radius:10px; border:1px solid var(--red); background:rgba(232,32,10,0.08); color:var(--red); font-family:'Noto Sans KR',sans-serif; font-size:14px; font-weight:700; cursor:pointer; transition:all 0.2s; display:none; }
 .post-to-community:hover { background:rgba(232,32,10,0.18); }
 .disclaimer { text-align:center; font-size:11px; color:#444; margin-top:28px; line-height:1.7; }
@@ -111,13 +110,9 @@ textarea:focus { border-color:var(--red); }
 .live-badge { display:flex; align-items:center; gap:6px; font-size:12px; color:#3d9e65; background:var(--green-dim); border:1px solid #1e4d32; padding:5px 12px; border-radius:99px; }
 .live-dot { width:6px; height:6px; background:var(--green); border-radius:50%; animation:pulse 2s ease-in-out infinite; }
 @keyframes pulse { 0%,100%{opacity:1} 50%{opacity:.3} }
-
-/* 정렬/필터 */
 .filter-row { display:flex; gap:8px; margin-bottom:16px; flex-wrap:wrap; }
 .filter-btn { padding:6px 14px; border-radius:99px; border:1px solid #444; background:transparent; color:#888; font-family:'Noto Sans KR',sans-serif; font-size:12px; cursor:pointer; transition:all 0.15s; }
 .filter-btn.active { background:var(--red); border-color:var(--red); color:white; }
-
-/* 포스트 카드 */
 .post-card { background:var(--surface); border:1px solid var(--border); border-radius:14px; padding:20px; margin-bottom:14px; transition:border-color 0.2s; }
 .post-card:hover { border-color:#444; }
 .post-card-header { display:flex; align-items:center; gap:8px; margin-bottom:12px; flex-wrap:wrap; }
@@ -140,8 +135,6 @@ textarea:focus { border-color:var(--red); }
 .comment-toggle:hover { border-color:#666; color:var(--cream); }
 .report-btn { margin-left:auto; padding:6px 10px; border-radius:8px; border:none; background:transparent; color:#444; font-size:12px; cursor:pointer; font-family:'Noto Sans KR',sans-serif; }
 .report-btn:hover { color:#888; }
-
-/* 댓글 */
 .comments-section { display:none; margin-top:14px; border-top:1px solid var(--border); padding-top:14px; }
 .comments-section.visible { display:block; }
 .comment-item { padding:10px 0; border-bottom:1px solid #222; }
@@ -157,13 +150,9 @@ textarea:focus { border-color:var(--red); }
 .comment-input:focus { border-color:var(--red); }
 .comment-submit { padding:10px 16px; border-radius:8px; border:none; background:var(--red); color:white; font-family:'Noto Sans KR',sans-serif; font-size:13px; font-weight:700; cursor:pointer; white-space:nowrap; }
 .comment-submit:hover { background:#c41a08; }
-
-/* 빈 상태 */
 .empty-state { text-align:center; padding:60px 20px; color:#555; }
 .empty-state .big { font-size:40px; margin-bottom:12px; }
 .empty-state p { font-size:14px; line-height:1.7; }
-
-/* 랭킹 섹션 */
 .ranking-section { background:var(--surface); border:1px solid var(--border); border-radius:14px; padding:20px; margin-bottom:20px; }
 .ranking-title { font-family:'Black Han Sans',sans-serif; font-size:16px; margin-bottom:14px; color:var(--cream); }
 .ranking-item { display:flex; align-items:center; gap:10px; padding:8px 0; border-bottom:1px solid #2a2a2a; }
@@ -174,16 +163,10 @@ textarea:focus { border-color:var(--red); }
 .rank-num.bronze { color:#b45309; }
 .rank-text { font-size:13px; color:#ccc; flex:1; line-height:1.5; display:-webkit-box; -webkit-line-clamp:2; -webkit-box-orient:vertical; overflow:hidden; word-break:keep-all; }
 .rank-likes { font-size:12px; color:var(--red); white-space:nowrap; }
-
-/* 로딩 */
 .spinner { display:none; text-align:center; padding:40px; color:#555; font-size:14px; }
 .spinner.visible { display:block; }
-
-/* 토스트 */
 .toast { position:fixed; bottom:24px; left:50%; transform:translateX(-50%) translateY(20px); background:#333; color:var(--cream); padding:12px 24px; border-radius:99px; font-size:13px; opacity:0; transition:all 0.3s; pointer-events:none; z-index:999; white-space:nowrap; }
 .toast.show { opacity:1; transform:translateX(-50%) translateY(0); }
-
-/* 랭킹 모달 */
 .modal-overlay { display:none; position:fixed; inset:0; background:rgba(0,0,0,0.7); z-index:1000; align-items:center; justify-content:center; padding:20px; }
 .modal-overlay.visible { display:flex; animation:fadeIn 0.2s ease; }
 @keyframes fadeIn { from{opacity:0} to{opacity:1} }
@@ -202,7 +185,6 @@ textarea:focus { border-color:var(--red); }
   <button class="nav-btn" onclick="showPage('community')">💢 분노 게시판</button>
 </nav>
 
-<!-- ===== GENERATOR PAGE ===== -->
 <div id="page-generator" class="page active">
   <header>
     <span class="logo-tag">익명 분노 대나무숲</span>
@@ -267,27 +249,21 @@ textarea:focus { border-color:var(--red); }
   </div>
 </div>
 
-<!-- ===== COMMUNITY PAGE ===== -->
 <div id="page-community" class="page">
   <div class="community-wrap">
     <div class="community-header">
       <div class="community-title">분노 <span>게시판</span></div>
       <div class="live-badge"><div class="live-dot"></div><span id="liveCount">0</span>명 분노 중</div>
     </div>
-
-    <!-- 랭킹 -->
     <div class="ranking-section" id="rankingSection">
       <div class="ranking-title">🏆 이번 주 레전드 욕</div>
       <div id="rankingList"><div class="spinner visible">불러오는 중...</div></div>
     </div>
-
-    <!-- 필터 -->
     <div class="filter-row">
       <button class="filter-btn active" data-sort="latest" onclick="setSort(this,'latest')">최신순</button>
       <button class="filter-btn" data-sort="likes" onclick="setSort(this,'likes')">공감순</button>
       <button class="filter-btn" data-sort="spicy" onclick="setSort(this,'spicy')">매운맛만</button>
     </div>
-
     <div id="postList"><div class="spinner visible">게시물 불러오는 중...</div></div>
     <div id="loadMore" style="text-align:center;display:none;">
       <button class="filter-btn" onclick="loadMorePosts()" style="padding:12px 32px;">더 보기</button>
@@ -305,7 +281,6 @@ textarea:focus { border-color:var(--red); }
 </div>
 <div class="toast" id="toast"></div>
 
-<!-- SEO 본문 콘텐츠 -->
 <footer style="max-width:680px;margin:0 auto;padding:40px 20px 60px;border-top:1px solid #2a2a2a;">
   <div style="color:#444;font-size:12px;line-height:2;word-break:keep-all;">
     <p style="margin-bottom:12px;font-size:13px;color:#555;">
@@ -345,7 +320,6 @@ const api = (path, opts={}) => fetch(`${SUPABASE_URL}/rest/v1/${path}`, {
   ...opts
 });
 
-// 기기별 고유 ID (기기마다 달라서 같은 와이파이여도 각자 공감 가능)
 function getDeviceId() {
   let id = localStorage.getItem('deviceId');
   if (!id) {
@@ -356,8 +330,6 @@ function getDeviceId() {
 }
 let ipHash = getDeviceId();
 
-// 좋아요 상태 로컬 캐시
-// 공감 하루 리셋
 function initLikes() {
   const today = new Date().toDateString();
   const savedDate = localStorage.getItem('likedDate');
@@ -372,7 +344,6 @@ function saveLikes() { localStorage.setItem('likedPosts', JSON.stringify([...lik
 const myComments = new Set(JSON.parse(localStorage.getItem('myComments')||'[]'));
 function saveMyComments() { localStorage.setItem('myComments', JSON.stringify([...myComments])); }
 
-// ===== 네비게이션 =====
 function showPage(page) {
   document.querySelectorAll('.page').forEach(p=>p.classList.remove('active'));
   document.querySelectorAll('.nav-btn').forEach(b=>b.classList.remove('active'));
@@ -381,7 +352,6 @@ function showPage(page) {
   if(page==='community') loadCommunity();
 }
 
-// ===== GENERATOR =====
 let selectedChips=[], selectedLevel='medium', sessionCount=0;
 let lastRageText='', lastComfortText='', lastTags=[], lastIntensity='medium';
 
@@ -408,9 +378,7 @@ function getLevelPrompt(level) {
 
 const comfortPromptText = `당신은 분노와 스트레스에 지친 사람을 따뜻하게 위로해주는 존재입니다. 아래 상황에 처한 사람에게 짧고 따뜻한 위로 한 마디를 건네주세요. 2~3문장, 진심 어린 말투로, 공감 먼저 그 다음 응원, "당신 잘못 아니에요"처럼 명확하게. 위로 문장만 출력하세요.`;
 
-
 async function callAI(prompt) {
-  // API 키는 서버(/api/generate)에서만 사용 - 브라우저에 노출 안 됨
   try {
     const r = await fetch('/api/generate', {
       method: 'POST',
@@ -477,45 +445,35 @@ ${ctxParts.join('\n')}
   }
 }
 
-function copyResult(btn) {
-  const text=document.getElementById('resultText').textContent;
-  fallbackCopy(text, btn, '📋 복사하기');
-}
+function copyResult(btn) { fallbackCopy(document.getElementById('resultText').textContent, btn, '📋 복사하기'); }
 function shareKakao(btn) {
   const text=document.getElementById('resultText').textContent;
-  const msg='🔥 대리욕이 대신 욕해줬다\n\n'+text+'\n\n👉 나도 해보기: https://daeriyok.vercel.app';
-  fallbackCopy(msg, btn, '💬 카톡용 복사');
+  fallbackCopy('🔥 대리욕이 대신 욕해줬다\n\n'+text+'\n\n👉 나도 해보기: https://daeriyok.vercel.app', btn, '💬 카톡용 복사');
 }
 function shareTwitter() {
   const text=document.getElementById('resultText').textContent;
-  const tweet='🔥 대리욕이 대신 욕해줬다\n\n'+text.slice(0,80)+'...\n\n#대리욕 #분노해소 #스트레스해소\n👉 https://daeriyok.vercel.app';
-  window.open('https://twitter.com/intent/tweet?text='+encodeURIComponent(tweet),'_blank');
+  window.open('https://twitter.com/intent/tweet?text='+encodeURIComponent('🔥 대리욕이 대신 욕해줬다\n\n'+text.slice(0,80)+'...\n\n#대리욕 #분노해소 #스트레스해소\n👉 https://daeriyok.vercel.app'),'_blank');
 }
 function copyLink(btn) { fallbackCopy('https://daeriyok.vercel.app', btn, '🔗 링크 복사'); }
 
 function fallbackCopy(text, btn, defaultLabel) {
-  const copy = () => {
-    if(navigator.clipboard?.writeText) {
-      navigator.clipboard.writeText(text).then(()=>showCopied(btn,defaultLabel)).catch(execCopy);
-    } else { execCopy(); }
-    function execCopy(){
-      const ta=document.createElement('textarea');
-      ta.value=text; ta.style.cssText='position:fixed;opacity:0';
-      document.body.appendChild(ta); ta.select();
-      try{ document.execCommand('copy'); showCopied(btn,defaultLabel); }
-      catch{ btn.textContent='❌ 직접 복사해주세요'; setTimeout(()=>btn.textContent=defaultLabel,2000); }
-      document.body.removeChild(ta);
-    }
-  };
-  copy();
+  if(navigator.clipboard?.writeText) {
+    navigator.clipboard.writeText(text).then(()=>showCopied(btn,defaultLabel)).catch(()=>execCopy(text,btn,defaultLabel));
+  } else { execCopy(text,btn,defaultLabel); }
+}
+function execCopy(text,btn,defaultLabel){
+  const ta=document.createElement('textarea');
+  ta.value=text; ta.style.cssText='position:fixed;opacity:0';
+  document.body.appendChild(ta); ta.select();
+  try{ document.execCommand('copy'); showCopied(btn,defaultLabel); }
+  catch{ btn.textContent='❌ 직접 복사해주세요'; setTimeout(()=>btn.textContent=defaultLabel,2000); }
+  document.body.removeChild(ta);
 }
 function showCopied(btn, defaultLabel) {
-  const prev=btn.textContent;
   btn.textContent='✅ 복사됨!';
-  setTimeout(()=>btn.textContent=defaultLabel||prev, 2000);
+  setTimeout(()=>btn.textContent=defaultLabel, 2000);
 }
 
-// ===== 게시판에 올리기 =====
 async function postToCommunity() {
   if(!lastRageText){ showToast('먼저 욕을 생성해주세요!'); return; }
   const cd=checkCooldown('post', 30);
@@ -523,28 +481,15 @@ async function postToCommunity() {
   const btn=document.getElementById('postBtn');
   btn.disabled=true; btn.textContent='올리는 중...';
   try {
-    const r=await api('posts',{
-      method:'POST',
-      body:JSON.stringify({
-        situation_tags: lastTags,
-        intensity: lastIntensity,
-        rage_text: lastRageText,
-        comfort_text: lastComfortText
-      })
-    });
+    const r=await api('posts',{method:'POST',body:JSON.stringify({situation_tags:lastTags,intensity:lastIntensity,rage_text:lastRageText,comfort_text:lastComfortText})});
     if(r.ok){
       btn.textContent='✅ 게시됐어요!';
       showToast('분노 게시판에 올라갔어요 🔥');
       setTimeout(()=>{ btn.textContent='📢 분노 게시판에 올리기'; btn.disabled=false; },3000);
     } else { throw new Error(); }
-  } catch {
-    btn.textContent='📢 분노 게시판에 올리기';
-    btn.disabled=false;
-    showToast('잠시 후 다시 시도해주세요');
-  }
+  } catch { btn.textContent='📢 분노 게시판에 올리기'; btn.disabled=false; showToast('잠시 후 다시 시도해주세요'); }
 }
 
-// ===== COMMUNITY =====
 let currentSort='latest', currentPage=0, allLoaded=false;
 const PAGE_SIZE=10;
 
@@ -558,22 +503,18 @@ async function loadCommunity() {
 async function loadPosts(reset=false) {
   if(reset){ currentPage=0; allLoaded=false; }
   if(allLoaded) return;
-
   let url='posts?select=*&report_count=lt.3&limit='+PAGE_SIZE+'&offset='+(currentPage*PAGE_SIZE);
   if(currentSort==='latest') url+='&order=created_at.desc';
   else if(currentSort==='likes') url+='&order=likes.desc';
   else if(currentSort==='spicy') url+='&intensity=eq.spicy&order=created_at.desc';
-
   try {
     const r=await api(url);
     const posts=await r.json();
     if(!Array.isArray(posts)) throw new Error();
-
     const list=document.getElementById('postList');
     if(reset) list.innerHTML='';
     if(posts.length===0 && currentPage===0){
-      list.innerHTML=`<div class="empty-state"><div class="big">😶</div><p>아직 게시물이 없어요<br>첫 번째 분노를 터뜨려보세요!</p></div>`;
-      return;
+      list.innerHTML=`<div class="empty-state"><div class="big">😶</div><p>아직 게시물이 없어요<br>첫 번째 분노를 터뜨려보세요!</p></div>`; return;
     }
     posts.forEach(p=>list.insertAdjacentHTML('beforeend',renderPost(p)));
     currentPage++;
@@ -588,10 +529,9 @@ async function loadRanking() {
   try {
     const r=await api('posts?select=id,rage_text,likes&order=likes.desc&limit=3&created_at=gte.'+getWeekStart());
     const posts=await r.json();
+    window._rankData = Array.isArray(posts) ? posts : [];
     const medals=['gold','silver','bronze'];
     const nums=['1','2','3'];
-    // 랭킹 데이터 저장 (모달용)
-    window._rankData = Array.isArray(posts) ? posts : [];
     const html=Array.isArray(posts)&&posts.length?posts.map((p,i)=>`
       <div class="ranking-item" onclick="openRankModal(${i})" style="cursor:pointer;">
         <div class="rank-num ${medals[i]}">${nums[i]}</div>
@@ -604,18 +544,15 @@ async function loadRanking() {
 
 async function loadLiveCount() {
   try {
-    // 방문 기록 (하루 1번만)
     const today = new Date().toDateString();
     const visited = localStorage.getItem('visited_'+today);
     if(!visited){
       await api('visitors',{method:'POST',body:JSON.stringify({visited_at:new Date().toISOString()})});
       localStorage.setItem('visited_'+today, '1');
     }
-    // 누적 방문자 수 조회
     const r=await api('visitors?select=id');
     const visitors=await r.json();
-    const count=Array.isArray(visitors)?visitors.length:0;
-    document.getElementById('liveCount').textContent=count;
+    document.getElementById('liveCount').textContent=Array.isArray(visitors)?visitors.length:0;
   } catch {}
 }
 
@@ -627,13 +564,12 @@ function renderPost(p) {
   const intensityLabel={mild:'😤 순한맛',medium:'😡 중간맛',spicy:'🤬 매운맛'}[p.intensity]||'';
   const tags=(p.situation_tags||[]).map(t=>`<span class="situation-tag">${escHtml(t)}</span>`).join('');
   const liked=likedPosts.has(p.id);
-  const time=timeAgo(p.created_at);
   return `
   <div class="post-card" id="post-${p.id}">
     <div class="post-card-header">
       <span class="intensity-badge ${p.intensity}">${intensityLabel}</span>
       ${tags}
-      <span class="post-time">${time}</span>
+      <span class="post-time">${timeAgo(p.created_at)}</span>
     </div>
     <div class="post-rage collapsed" id="rage-${p.id}">${escHtml(p.rage_text)}</div>
     <button class="expand-btn" onclick="toggleExpand('${p.id}')">더 보기 ▾</button>
@@ -646,9 +582,7 @@ function renderPost(p) {
       <button class="report-btn" onclick="reportPost('${p.id}')">신고</button>
     </div>
     <div class="comments-section" id="comments-${p.id}">
-      <div id="comment-list-${p.id}">
-        <div style="font-size:12px;color:#555;padding:8px 0">댓글 불러오는 중...</div>
-      </div>
+      <div id="comment-list-${p.id}"><div style="font-size:12px;color:#555;padding:8px 0">댓글 불러오는 중...</div></div>
       <div class="comment-input-row">
         <input class="comment-input" id="comment-input-${p.id}" placeholder="익명으로 댓글 달기..." maxlength="200">
         <button class="comment-submit" onclick="submitComment('${p.id}')">등록</button>
@@ -661,11 +595,8 @@ function toggleExpand(id) {
   const el=document.getElementById('rage-'+id);
   const btn=el.nextElementSibling;
   const comfort=document.getElementById('comfort-'+id);
-  if(el.classList.contains('collapsed')){
-    el.classList.remove('collapsed'); btn.textContent='접기 ▴'; comfort.classList.add('visible');
-  } else {
-    el.classList.add('collapsed'); btn.textContent='더 보기 ▾'; comfort.classList.remove('visible');
-  }
+  if(el.classList.contains('collapsed')){ el.classList.remove('collapsed'); btn.textContent='접기 ▴'; comfort.classList.add('visible'); }
+  else { el.classList.add('collapsed'); btn.textContent='더 보기 ▾'; comfort.classList.remove('visible'); }
 }
 
 async function toggleLike(postId, btn) {
@@ -676,13 +607,11 @@ async function toggleLike(postId, btn) {
   try {
     if(liked){
       await api('likes?post_id=eq.'+postId+'&ip_hash=eq.'+ipHash,{method:'DELETE',prefer:''});
-      likedPosts.delete(postId); saveLikes();
-      btn.classList.remove('liked');
+      likedPosts.delete(postId); saveLikes(); btn.classList.remove('liked');
     } else {
       const r=await api('likes',{method:'POST',body:JSON.stringify({post_id:postId,ip_hash:ipHash})});
       if(r.ok){ likedPosts.add(postId); saveLikes(); btn.classList.add('liked'); }
     }
-    // DB의 실제 likes 값을 다시 읽어와서 정확히 표시
     const pr=await api('posts?id=eq.'+postId+'&select=likes');
     const pd=await pr.json();
     if(Array.isArray(pd)&&pd[0]){ countEl.textContent=pd[0].likes; }
@@ -701,20 +630,11 @@ async function loadComments(postId) {
   try {
     const r=await api('comments?post_id=eq.'+postId+'&order=created_at.asc&select=*');
     const comments=await r.json();
-    if(!Array.isArray(comments)||comments.length===0){
-      list.innerHTML='<div style="font-size:12px;color:#555;padding:8px 0">첫 댓글을 달아보세요!</div>'; return;
-    }
+    if(!Array.isArray(comments)||comments.length===0){ list.innerHTML='<div style="font-size:12px;color:#555;padding:8px 0">첫 댓글을 달아보세요!</div>'; return; }
     list.innerHTML=comments.map(c=>{
       const mine=myComments.has(c.id);
-      const actions=mine?`<span class="comment-actions">
-        <button onclick="editComment('${c.id}','${postId}')">수정</button>
-        <button onclick="deleteComment('${c.id}','${postId}')">삭제</button>
-      </span>`:'';
-      return `
-      <div class="comment-item" id="comment-${c.id}">
-        <div class="comment-text" id="ctext-${c.id}">${escHtml(c.content)}</div>
-        <div class="comment-meta"><span class="comment-time">${timeAgo(c.created_at)}</span>${actions}</div>
-      </div>`;
+      const actions=mine?`<span class="comment-actions"><button onclick="editComment('${c.id}','${postId}')">수정</button><button onclick="deleteComment('${c.id}','${postId}')">삭제</button></span>`:'';
+      return `<div class="comment-item" id="comment-${c.id}"><div class="comment-text" id="ctext-${c.id}">${escHtml(c.content)}</div><div class="comment-meta"><span class="comment-time">${timeAgo(c.created_at)}</span>${actions}</div></div>`;
     }).join('');
   } catch { list.innerHTML='<div style="font-size:12px;color:#555">댓글을 불러올 수 없어요</div>'; }
 }
@@ -737,14 +657,11 @@ async function submitComment(postId) {
 }
 
 async function editComment(commentId, postId) {
-  const textEl=document.getElementById('ctext-'+commentId);
-  const current=textEl.textContent;
+  const current=document.getElementById('ctext-'+commentId).textContent;
   const updated=prompt('댓글 수정', current);
-  if(updated===null) return;
-  const trimmed=updated.trim();
-  if(!trimmed){ showToast('내용을 입력해주세요'); return; }
+  if(updated===null||!updated.trim()){ if(updated!==null) showToast('내용을 입력해주세요'); return; }
   try {
-    const r=await api('comments?id=eq.'+commentId,{method:'PATCH',body:JSON.stringify({content:trimmed})});
+    const r=await api('comments?id=eq.'+commentId,{method:'PATCH',body:JSON.stringify({content:updated.trim()})});
     if(r.ok){ await loadComments(postId); showToast('댓글이 수정됐어요'); }
     else throw new Error();
   } catch { showToast('수정 실패. 다시 시도해주세요'); }
@@ -768,7 +685,6 @@ async function reportPost(postId) {
     reportedPosts.add(postId);
     localStorage.setItem('reportedPosts', JSON.stringify([...reportedPosts]));
     showToast('신고가 접수됐어요');
-    // 신고한 게시물은 본인 화면에서 즉시 숨김
     const card=document.getElementById('post-'+postId);
     if(card) card.style.display='none';
   } catch { showToast('신고 실패. 다시 시도해주세요'); }
@@ -776,11 +692,8 @@ async function reportPost(postId) {
 
 function setSort(btn, sort) {
   document.querySelectorAll('.filter-btn').forEach(b=>b.classList.remove('active'));
-  btn.classList.add('active');
-  currentSort=sort;
-  loadPosts(true);
+  btn.classList.add('active'); currentSort=sort; loadPosts(true);
 }
-
 function loadMorePosts() { loadPosts(false); }
 
 function timeAgo(iso) {
@@ -795,50 +708,37 @@ function escHtml(s) {
   return (s||'').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;');
 }
 
-// ===== 게시판 보호 장치 =====
-// 개인정보/광고/링크 패턴 검사
 function checkContent(text) {
-  if (!text || !text.trim()) return { ok:false, msg:'내용을 입력해주세요' };
-  const t = text.trim();
-  if (t.length > 300) return { ok:false, msg:'너무 길어요 (300자 이내)' };
-  // 전화번호
-  if (/01[0-9]['"]?[-\s]?\d{3,4}[-\s]?\d{4}/.test(t)) return { ok:false, msg:'전화번호는 입력할 수 없어요' };
-  // 주민번호 패턴
-  if (/\d{6}[-\s]?[1-4]\d{6}/.test(t)) return { ok:false, msg:'개인정보는 입력할 수 없어요' };
-  // URL / 링크
-  if (/(https?:\/\/|www\.|\.com|\.net|\.co\.kr|\.kr\b|t\.me\/|bit\.ly)/i.test(t)) return { ok:false, msg:'링크는 올릴 수 없어요' };
-  // 카톡/텔레 ID 유도
-  if (/(카톡|카카오톡|텔레|텔레그램|오픈채팅|영업|광고|홍보|디비|작업대출|토토|벳)/i.test(t)) return { ok:false, msg:'광고성 내용은 올릴 수 없어요' };
-  // 같은 문자 과도 반복 (도배)
-  if (/(.)\1{15,}/.test(t)) return { ok:false, msg:'도배성 내용은 올릴 수 없어요' };
-  return { ok:true };
+  if (!text||!text.trim()) return {ok:false,msg:'내용을 입력해주세요'};
+  const t=text.trim();
+  if(t.length>300) return {ok:false,msg:'너무 길어요 (300자 이내)'};
+  if(/01[0-9]['"]?[-\s]?\d{3,4}[-\s]?\d{4}/.test(t)) return {ok:false,msg:'전화번호는 입력할 수 없어요'};
+  if(/\d{6}[-\s]?[1-4]\d{6}/.test(t)) return {ok:false,msg:'개인정보는 입력할 수 없어요'};
+  if(/(https?:\/\/|www\.|\.com|\.net|\.co\.kr|\.kr\b|t\.me\/|bit\.ly)/i.test(t)) return {ok:false,msg:'링크는 올릴 수 없어요'};
+  if(/(카톡|카카오톡|텔레|텔레그램|오픈채팅|영업|광고|홍보|디비|작업대출|토토|벳)/i.test(t)) return {ok:false,msg:'광고성 내용은 올릴 수 없어요'};
+  if(/(.)\1{15,}/.test(t)) return {ok:false,msg:'도배성 내용은 올릴 수 없어요'};
+  return {ok:true};
 }
 
-// 작성 쿨다운 (도배 방지)
 function checkCooldown(key, seconds) {
-  const last = parseInt(localStorage.getItem('cd_'+key) || '0');
-  const now = Date.now();
-  if (now - last < seconds*1000) {
-    return Math.ceil((seconds*1000 - (now-last))/1000);
-  }
-  localStorage.setItem('cd_'+key, String(now));
+  const last=parseInt(localStorage.getItem('cd_'+key)||'0');
+  const now=Date.now();
+  if(now-last<seconds*1000) return Math.ceil((seconds*1000-(now-last))/1000);
+  localStorage.setItem('cd_'+key,String(now));
   return 0;
 }
 
 function openRankModal(idx) {
-  const medals = ['🥇','🥈','🥉'];
-  const nums = ['1','2','3'];
-  const p = window._rankData && window._rankData[idx];
+  const medals=['🥇','🥈','🥉'];
+  const p=window._rankData&&window._rankData[idx];
   if(!p) return;
-  document.getElementById('modalRank').textContent = medals[idx]+' '+nums[idx]+'위 레전드 욕';
-  document.getElementById('modalText').textContent = p.rage_text || '';
-  document.getElementById('modalLikes').textContent = '😤 공감 '+p.likes+'개';
+  document.getElementById('modalRank').textContent=medals[idx]+' '+(idx+1)+'위 레전드 욕';
+  document.getElementById('modalText').textContent=p.rage_text||'';
+  document.getElementById('modalLikes').textContent='😤 공감 '+p.likes+'개';
   document.getElementById('rankModal').classList.add('visible');
 }
 function closeRankModal(e) {
-  if(e.target === document.getElementById('rankModal')) {
-    document.getElementById('rankModal').classList.remove('visible');
-  }
+  if(e.target===document.getElementById('rankModal')) document.getElementById('rankModal').classList.remove('visible');
 }
 
 function showToast(msg) {
